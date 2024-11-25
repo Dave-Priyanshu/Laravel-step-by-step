@@ -1,66 +1,216 @@
-<p align="center"><a href="https://laravel.com" target="_blank"><img src="https://raw.githubusercontent.com/laravel/art/master/logo-lockup/5%20SVG/2%20CMYK/1%20Full%20Color/laravel-logolockup-cmyk-red.svg" width="400" alt="Laravel Logo"></a></p>
+```markdown
+# Learn Laravel - Job Listing Project
 
-<p align="center">
-<a href="https://github.com/laravel/framework/actions"><img src="https://github.com/laravel/framework/workflows/tests/badge.svg" alt="Build Status"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/dt/laravel/framework" alt="Total Downloads"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/v/laravel/framework" alt="Latest Stable Version"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/l/laravel/framework" alt="License"></a>
-</p>
+![Laravel Logo](https://laravel.com/img/logomark.min.svg)  
+This repository is created as a part of my learning process to understand **Laravel** by building a small job listing project. In this project, I will go through key concepts of Laravel such as routing, views, components, models, and data passing and many more. Below is a step-by-step process of how I learned and implemented various features in this project.
 
-## About Laravel
+---
 
-Laravel is a web application framework with expressive, elegant syntax. We believe development must be an enjoyable and creative experience to be truly fulfilling. Laravel takes the pain out of development by easing common tasks used in many web projects, such as:
+## 📝 1. Initial Setup: Routes and Views
 
-- [Simple, fast routing engine](https://laravel.com/docs/routing).
-- [Powerful dependency injection container](https://laravel.com/docs/container).
-- Multiple back-ends for [session](https://laravel.com/docs/session) and [cache](https://laravel.com/docs/cache) storage.
-- Expressive, intuitive [database ORM](https://laravel.com/docs/eloquent).
-- Database agnostic [schema migrations](https://laravel.com/docs/migrations).
-- [Robust background job processing](https://laravel.com/docs/queues).
-- [Real-time event broadcasting](https://laravel.com/docs/broadcasting).
+To start the project, I created three basic views:
 
-Laravel is accessible, powerful, and provides tools required for large, robust applications.
+- `home.blade.php`
+- `contact.blade.php`
+- `jobs.blade.php`
 
-## Learning Laravel
+Each of these views contained duplicate code for the header. This is where the project begins to show the need for **reusable components**.
 
-Laravel has the most extensive and thorough [documentation](https://laravel.com/docs) and video tutorial library of all modern web application frameworks, making it a breeze to get started with the framework.
+---
 
-You may also try the [Laravel Bootcamp](https://bootcamp.laravel.com), where you will be guided through building a modern Laravel application from scratch.
+## 🔧 2. Creating a Reusable Component - `navlayout.blade.php`
 
-If you don't feel like reading, [Laracasts](https://laracasts.com) can help. Laracasts contains thousands of video tutorials on a range of topics including Laravel, modern PHP, unit testing, and JavaScript. Boost your skills by digging into our comprehensive video library.
+To avoid repeating code, I created a component named **`navlayout.blade.php`**, which contains the header code. This component was then included in all views using the following syntax:
 
-## Laravel Sponsors
+```php
+<x-navlayout></x-navlayout>
+```
 
-We would like to extend our thanks to the following sponsors for funding Laravel development. If you are interested in becoming a sponsor, please visit the [Laravel Partners program](https://partners.laravel.com).
+This made the code cleaner and allowed me to reuse the header across different pages.
 
-### Premium Partners
+---
 
-- **[Vehikl](https://vehikl.com/)**
-- **[Tighten Co.](https://tighten.co)**
-- **[WebReinvent](https://webreinvent.com/)**
-- **[Kirschbaum Development Group](https://kirschbaumdevelopment.com)**
-- **[64 Robots](https://64robots.com)**
-- **[Curotec](https://www.curotec.com/services/technologies/laravel/)**
-- **[Cyber-Duck](https://cyber-duck.co.uk)**
-- **[DevSquad](https://devsquad.com/hire-laravel-developers)**
-- **[Jump24](https://jump24.co.uk)**
-- **[Redberry](https://redberry.international/laravel/)**
-- **[Active Logic](https://activelogic.com)**
-- **[byte5](https://byte5.de)**
-- **[OP.GG](https://op.gg)**
+## ⚡ 3. Dynamic Data Passing using Slots
 
-## Contributing
+Next, I learned how to dynamically pass data to views using **slots**. In the `navlayout.blade.php` component, I added a slot for the header:
 
-Thank you for considering contributing to the Laravel framework! The contribution guide can be found in the [Laravel documentation](https://laravel.com/docs/contributions).
+```php
+<x-slot:heading>
+    {{$heading}}
+</x-slot:heading>
+```
 
-## Code of Conduct
+To pass dynamic content to the header, I used the following syntax in the parent view:
 
-In order to ensure that the Laravel community is welcoming to all, please review and abide by the [Code of Conduct](https://laravel.com/docs/contributions#code-of-conduct).
+```php
+<x-slot:heading>My Custom Heading</x-slot:heading>
+```
 
-## Security Vulnerabilities
+This makes the header component reusable for any page with custom content.
 
-If you discover a security vulnerability within Laravel, please send an e-mail to Taylor Otwell via [taylor@laravel.com](mailto:taylor@laravel.com). All security vulnerabilities will be promptly addressed.
+---
 
-## License
+## 🧩 4. Using Models to Simplify Data Handling
 
-The Laravel framework is open-sourced software licensed under the [MIT license](https://opensource.org/licenses/MIT).
+Initially, I was passing the job data directly to the routes in an array, like this:
+
+```php
+Route::get('/jobs', function () {
+    return view('personal.jobs',[
+        'jobs'=> [
+            ['id'=> 1, 'title'=> 'Director', 'salary'=> '$50,000'],
+            ['id'=> 2, 'title'=> 'Programmer', 'salary'=> '$10,000'],
+            ['id'=> 3, 'title'=> 'Teacher', 'salary'=> '$40,000']
+        ]
+    ]);
+});
+```
+
+However, to make things more scalable and organized, I created a model called **`Job.php`** and moved the job data logic to the model. I defined two methods in the `Job` model: `all()` to get all jobs and `find()` to get a job by ID.
+
+---
+
+### Updated Code using the Job Model:
+
+#### Routes (`web.php`):
+
+```php
+<?php
+
+use Illuminate\Support\Arr;
+use Illuminate\Support\Facades\Route;
+use App\Models\Job;
+
+Route::get('/', function() {
+    return view('personal.home');
+})->name('personal.home');
+
+Route::get('/jobs', function() {
+    return view('personal.jobs', [
+        'jobs' => Job::all()
+    ]);
+})->name('personal.jobs');
+
+Route::get('/jobs/{id}', function($id) {
+    $job = Job::find($id);
+    return view('personal.job', ['job' => $job]);
+});
+
+Route::get('/contact', function() {
+    return view('personal.contact');
+})->name('personal.contact');
+```
+
+#### Job Model (`Job.php`):
+
+```php
+<?php
+
+namespace App\Models;
+
+use Illuminate\Support\Arr;
+
+class Job {
+    public static function all(): array
+    {
+        return [
+            ['id'=> 1, 'title'=> 'Director', 'salary'=> '$50,000'],
+            ['id'=> 2, 'title'=> 'Programmer', 'salary'=> '$10,000'],
+            ['id'=> 3, 'title'=> 'Teacher', 'salary'=> '$40,000']
+        ];
+    }
+
+    public static function find(int $id): array
+    {
+        $job = Arr::first(static::all(), function($job) use ($id) {
+            return $job['id'] == $id;
+        });
+        
+        if (! $job) {    
+            abort(404, 'Job not found');
+        }
+        
+        return $job;
+    }
+}
+```
+
+---
+
+### Why Use a Model?
+
+- **Separation of Concerns**: The data is no longer hardcoded in the routes, making the code more modular and maintainable.
+- **Scalability**: Adding, removing, or modifying jobs in the future will be easier as the logic is centralized in the `Job` model.
+
+---
+
+## 💻 5. Views
+
+The views were updated to work with the model and dynamic data passed from the routes.
+
+### `jobs.blade.php` (Jobs Listing Page):
+
+```php
+<x-navlayout>
+    <x-slot:heading>
+        Job's Page
+    </x-slot:heading>
+
+    <h1 class="text-2xl font-semibold mb-4"> Welcome to Jobs Page</h1>
+    <ul>
+        @foreach ($jobs as $job)
+            <li>
+                <a href="/jobs/{{ $job['id'] }}">
+                    <strong>{{ $job['title'] }}</strong>: Pay's {{$job['salary']}} per year.
+                </a>
+            </li>  
+        @endforeach
+    </ul>
+</x-navlayout>
+```
+
+### `job.blade.php` (Single Job Page):
+
+```php
+<x-navlayout>
+    <x-slot:heading>
+        Job's Listing Page
+    </x-slot:heading>
+
+    <h1 class="text-2xl font-semibold mb-4"> Welcome to the Job Listing Page</h1>
+
+    <h2 class="font-bold text-lg">{{ $job['title'] }}:</h2>
+    <p>
+        This job pays {{ $job['salary'] }} per year.
+    </p>
+</x-navlayout>
+```
+
+---
+
+## 🚀 Conclusion
+
+This project helped me understand several key concepts in Laravel such as routing, views, reusable components, dynamic data passing using slots, and how to simplify data handling using models. The job listing project has now become more modular, and I can scale it easily for future use. 
+
+This experience will help me with more advanced Laravel features as I continue my learning journey.
+
+---
+
+### 🚀 Future Enhancements:
+- 
+
+---
+
+### ⚙️ Technologies Used:
+- **PHP** (Laravel Framework)
+- **Blade Templating**
+- **Models**
+
+---
+
+### ✨ Follow Me:
+- GitHub: [Dave-Priyanshu](https://github.com/Dave-Priyanshu)
+
+Feel free to contribute, provide feedback, or ask questions. Happy coding! 👨‍💻👩‍💻
+
+
