@@ -1,5 +1,6 @@
 <?php
 
+use App\Models\Employer;
 use Illuminate\Support\Arr;
 use Illuminate\Support\Facades\Route;
 use App\Models\Job;
@@ -9,6 +10,20 @@ use App\Models\Job;
 // });
 
 Route::get('/',function(){
+
+    // Get all jobs with their employer
+    // $jobs = Job::with('employer')->get();
+    $jobs = Job::with('employer')->first();
+
+    // $employers = Employer::with('jobs')->get();
+    $employers = Employer::with('jobs')->first();
+
+    return[
+        'jobs' => $jobs,
+        'employers' => $employers
+    ];
+    // $jobs = Job::all();
+    // dd($jobs[0]->title);
     return view('personal.home');
 })->name('personal.home');
 
