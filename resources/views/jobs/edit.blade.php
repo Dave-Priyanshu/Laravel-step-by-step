@@ -39,17 +39,21 @@
         <div class="flex justify-between items-center">
             <div class="flex space-x-4">
                 <button type="submit" class="bg-blue-600 text-white px-5 py-2.5 rounded-lg hover:bg-blue-700 focus:ring-4 focus:ring-blue-300">Update</button>
+
                 <a href="/jobs/{{ $job->id }}" class="bg-gray-600 text-white px-5 py-2.5 rounded-lg hover:bg-gray-700">Cancel</a>
             </div>
-            <!-- Delete Button -->
-            <form method="POST" action="/jobs/{{ $job->id }}" class="hidden">
-                @csrf
-                @method('DELETE')
-                <button type="submit" class="bg-red-600 text-white px-5 py-2.5 rounded-lg hover:bg-red-700 focus:ring-4 focus:ring-red-300" 
-                        onclick="return confirm('Are you sure you want to delete this job?');">
-                    Delete
-                </button>
-            </form>
         </div>
     </form>
+
+    <!-- Delete Button Outside Form -->
+    <div class="flex justify-center ">
+        <form method="POST" action="/jobs/{{ $job->id }}">
+            @csrf
+            @method('DELETE')
+            <button type="submit" class="bg-red-600 text-white px-5 py-2.5 rounded-lg hover:bg-red-700 focus:ring-4 focus:ring-red-300"
+                    onclick="return confirm('Are you sure you want to delete this job?');">
+                Delete
+            </button>
+        </form>
+    </div>
 </x-navlayout>

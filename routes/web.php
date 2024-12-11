@@ -30,14 +30,15 @@ Route::get('/jobs/create',function(){
     return view('jobs.create');
 });
 
-// single record
-Route::get('/jobs/{id}',function($id){
-  $job = Job::find($id);
+// show
+Route::get('/jobs/{job}',function(Job $job){
+/*   $job = Job::find($job);  
+We do not need to find the job using the id anymore,because we are using route model binding*/
 
     return view('jobs.show', ['job' => $job]);
 });
 
-// create post route
+// Store
 Route::post('/jobs',function(Request $request){
     // validation
     $request->validate([
@@ -55,24 +56,27 @@ Route::post('/jobs',function(Request $request){
 });
 
 // edit job
-Route::get('/jobs/{id}/edit',function($id){
-    $job = Job::find($id);
+Route::get('/jobs/{job}/edit',function(Job $job){
+/*   $job = Job::find($job);  
+We do not need to find the job using the id anymore,because we are using route model binding*/
 
     return view('jobs.edit', ['job' => $job]);
 });
 
 // update 
-Route::patch('/jobs/{id}',function($id, Request $request){
+Route::patch('/jobs/{job}',function(Job $job, Request $request){
     // validation
     $request->validate([
-        'title'=> 'required|string|min:3',
+        'title'=> 'required|min:3',
         'salary'=> 'required'
     ]);
 
     // authorization(on hold)..
     // update the job
     //! method 1
-    $job = Job::findorFail($id);
+/*    $job = Job::findorFail($id); 
+We do not need to find the job using the id anymore,because we are using route model binding*/
+
     // $job->title = $request('title');
     // $job->salary= $request('salary');
     // $job->save();
@@ -87,10 +91,10 @@ Route::patch('/jobs/{id}',function($id, Request $request){
 });
 
 // delete
-Route::delete('/jobs/{id}',function($id){
+Route::delete('/jobs/{job}',function(Job $job){
     // autorize the req(on hold)
 
-    $job = Job::findorFail($id);
+    // $job = Job::findorFail($id);
     $job->delete();
 
     return redirect('/jobs');
