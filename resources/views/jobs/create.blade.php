@@ -1,4 +1,5 @@
 <x-navlayout>
+    <x-slot:title>Create New Job Page</x-slot:title>
     <x-slot:heading>
         Create a New Job
     </x-slot:heading>

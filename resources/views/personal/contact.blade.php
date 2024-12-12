@@ -1,4 +1,5 @@
 <x-navlayout>
+    <x-slot:title>Contact Page</x-slot:title>
     <x-slot:heading>
         Contact Page
     </x-slot:heading>

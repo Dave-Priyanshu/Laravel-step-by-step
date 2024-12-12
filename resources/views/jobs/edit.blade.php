@@ -1,4 +1,5 @@
 <x-navlayout>
+    <x-slot:title>Job Edit Page</x-slot:title>
     <x-slot:heading>
         Edit Job: {{ $job->title }}
     </x-slot:heading>

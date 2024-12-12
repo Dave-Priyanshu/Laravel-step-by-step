@@ -1,4 +1,5 @@
 <x-navlayout>
+    <x-slot:title>Job Listing Page</x-slot:title>
     <x-slot:heading>
         Job's Page
     </x-slot:heading>
