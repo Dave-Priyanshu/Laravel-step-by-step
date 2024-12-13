@@ -62,8 +62,10 @@ class JobController extends Controller
         // $job->title = $request('title');
         // $job->salary= $request('salary');
         // $job->save();
-
-        //! method 2
+        // ! method 2 to update jobs
+        // $job->update($request->all());
+        
+        //! method 3
         $job->update([
             'title'=> request('title'),
             'salary'=> request('salary')
