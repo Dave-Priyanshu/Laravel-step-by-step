@@ -90,7 +90,7 @@
                 <a href="/login" class="bg-white text-blue-600 font-bold py-3 px-6 rounded-lg shadow-lg hover:bg-gray-100">
                     Post a Job
                 </a>
-                <a href="{{ route('jobs.index') }}" class="bg-blue-800 text-white font-bold py-3 px-6 rounded-lg shadow-lg hover:bg-blue-700">
+                <a href="/jobs" class="bg-blue-800 text-white font-bold py-3 px-6 rounded-lg shadow-lg hover:bg-blue-700">
                     Browse Jobs
                 </a>
             </div>

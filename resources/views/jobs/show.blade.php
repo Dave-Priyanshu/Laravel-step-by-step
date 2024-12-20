@@ -22,8 +22,12 @@
                 <div class="flex justify-between items-center">
                     <a href="/jobs" class="text-blue-500 hover:underline">← Back to Job Listings</a>
                     <div class="flex space-x-4">
+
                         <!-- Edit Job Button -->
-                        <a href="/jobs/{{ $job->id }}/edit" class="px-6 py-2 bg-yellow-500 text-white rounded-md hover:bg-yellow-600 transition">Edit Job</a>
+                        @can('edit',$job)
+                            <a href="/jobs/{{ $job->id }}/edit" class="px-6 py-2 bg-yellow-500 text-white rounded-md hover:bg-yellow-600 transition">Edit Job</a>
+                        @endcan
+
                         <!-- Apply Now Button -->
                         <button class="px-6 py-2 bg-blue-500 text-white rounded-md hover:bg-blue-600 transition">
                             Apply Now

@@ -2,8 +2,13 @@
 
 namespace App\Http\Controllers;
 
+use App\Mail\JobPosted;
 use App\Models\Job;
+use App\Models\User;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Gate;
+use Illuminate\Support\Facades\Mail;
 
 class JobController extends Controller
 {
@@ -30,11 +35,14 @@ class JobController extends Controller
         'salary'=> 'required|numeric'
     ]);
 
-    Job::create([
+    $job = Job::create([
         'title'=> request('title'),
         'salary'=> request('salary'),
         'employer_id'=> 1
     ]);
+    Mail::to($job->employer->user)->send(
+        new JobPosted($job)
+    );
 
     return redirect('/jobs');
     }
@@ -42,6 +50,11 @@ class JobController extends Controller
     public function edit(Job $job){
         /*   $job = Job::find($job);  
         We do not need to find the job using the id anymore,because we are using route model binding*/
+        // if(Auth::guest()){
+        //     return redirect('/login');
+        // }
+        
+        // Gate::authorize('edit-job',$job);
 
         return view('jobs.edit', ['job' => $job]);
     }

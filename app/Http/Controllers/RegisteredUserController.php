@@ -29,7 +29,7 @@ class RegisteredUserController extends Controller
         Auth()->login($user);
         // dd(request()->all());
 
-        return redirect('/login')->with('success', 'Your account has been created');
+        return redirect('/')->with('success', 'Your account has been created');
     }
     
 }
